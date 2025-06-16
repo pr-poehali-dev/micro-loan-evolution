@@ -109,6 +109,73 @@ const UserDashboard = ({
         </Card>
       </div>
 
+      {/* Премиум услуги */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Icon name="Star" size={20} className="text-emerald-600" />
+            Премиум услуги
+          </CardTitle>
+          <CardDescription>
+            Активные услуги для повышения одобрения займов
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {applications.some((app) => app.premiumServiceCost > 0) ? (
+            <div className="space-y-3">
+              {applications
+                .filter((app) => app.premiumServiceCost > 0)
+                .map((app) => (
+                  <div
+                    key={app.id}
+                    className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg border border-emerald-200"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                        <Icon
+                          name="Star"
+                          size={16}
+                          className="text-emerald-600"
+                        />
+                      </div>
+                      <div>
+                        <p className="font-medium text-emerald-900">
+                          Повышение одобрения займа
+                        </p>
+                        <p className="text-sm text-emerald-700">
+                          Заявка на {Number(app.amount).toLocaleString()} ₽
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <Badge
+                        variant="secondary"
+                        className="bg-emerald-100 text-emerald-700"
+                      >
+                        Активна
+                      </Badge>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        499 ₽
+                      </p>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          ) : (
+            <div className="text-center py-6">
+              <Icon
+                name="Star"
+                size={40}
+                className="mx-auto text-muted-foreground mb-3"
+              />
+              <p className="text-muted-foreground">
+                У вас нет активных премиум услуг
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Заявки */}
       <Card>
         <CardHeader>

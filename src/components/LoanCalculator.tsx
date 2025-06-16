@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import Icon from "@/components/ui/icon";
 
 const LoanCalculator = () => {
@@ -19,6 +20,7 @@ const LoanCalculator = () => {
   const [monthlyPayment, setMonthlyPayment] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
   const [overpayment, setOverpayment] = useState(0);
+  const [premiumService, setPremiumService] = useState(false);
 
   useEffect(() => {
     const loanAmount = amount[0];
@@ -92,6 +94,72 @@ const LoanCalculator = () => {
             <Input value={`${rate}% годовых`} disabled className="bg-muted" />
           </div>
         </div>
+
+        {/* Премиум услуга */}
+        <Card className="bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border-emerald-200">
+          <CardContent className="p-6">
+            <div className="flex items-start space-x-4">
+              <Checkbox
+                id="premium-service"
+                checked={premiumService}
+                onCheckedChange={setPremiumService}
+                className="mt-1"
+              />
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon name="Star" size={20} className="text-emerald-600" />
+                  <Label
+                    htmlFor="premium-service"
+                    className="font-semibold text-emerald-700"
+                  >
+                    Повышение одобрения займа
+                  </Label>
+                  <span className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full text-sm font-medium">
+                    499 ₽
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Увеличивает шансы одобрения на 85% благодаря приоритетной
+                  обработке заявки и улучшенному скорингу
+                </p>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="flex items-center gap-1">
+                    <Icon
+                      name="CheckCircle"
+                      size={14}
+                      className="text-emerald-600"
+                    />
+                    <span>Приоритетное рассмотрение</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Icon
+                      name="CheckCircle"
+                      size={14}
+                      className="text-emerald-600"
+                    />
+                    <span>Улучшенный скоринг</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Icon
+                      name="CheckCircle"
+                      size={14}
+                      className="text-emerald-600"
+                    />
+                    <span>Персональный менеджер</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Icon
+                      name="CheckCircle"
+                      size={14}
+                      className="text-emerald-600"
+                    />
+                    <span>Быстрое одобрение</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="bg-gradient-to-br from-primary/10 to-primary/5">

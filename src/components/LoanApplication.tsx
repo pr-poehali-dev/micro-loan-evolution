@@ -19,6 +19,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import Icon from "@/components/ui/icon";
 import { useToast } from "@/hooks/use-toast";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface LoanApplicationProps {
   onSubmit: (application: any) => void;
@@ -38,6 +39,7 @@ const LoanApplication = ({ onSubmit, user }: LoanApplicationProps) => {
     passportDate: "",
     birthDate: "",
     address: "",
+    premiumService: false,
   });
   const { toast } = useToast();
 
@@ -66,7 +68,8 @@ const LoanApplication = ({ onSubmit, user }: LoanApplicationProps) => {
       createdAt: new Date().toISOString(),
       monthlyPayment: Math.round(
         ((Number(formData.amount) * 0.159) / 12) * 1.5,
-      ), // Упрощенный расчет
+      ),
+      premiumServiceCost: formData.premiumService ? 499 : 0,
     };
 
     onSubmit(application);
@@ -245,6 +248,43 @@ const LoanApplication = ({ onSubmit, user }: LoanApplicationProps) => {
               }
             />
           </div>
+
+          {/* Премиум услуга */}
+          <Card className="bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border-emerald-200">
+            <CardContent className="p-4">
+              <div className="flex items-start space-x-4">
+                <Checkbox
+                  id="premium-service-form"
+                  checked={formData.premiumService}
+                  onCheckedChange={(checked) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      premiumService: checked,
+                    }))
+                  }
+                  className="mt-1"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Icon name="Star" size={18} className="text-emerald-600" />
+                    <Label
+                      htmlFor="premium-service-form"
+                      className="font-semibold text-emerald-700"
+                    >
+                      Повышение одобрения займа
+                    </Label>
+                    <span className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full text-xs font-medium">
+                      +499 ₽
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Увеличивает вероятность одобрения на 85% и обеспечивает
+                    рассмотрение в течение 5 минут
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           <Button type="submit" className="w-full" size="lg">
             <Icon name="Send" className="mr-2" size={20} />
