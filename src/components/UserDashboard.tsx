@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -10,12 +11,14 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import Icon from "@/components/ui/icon";
+import CardBindingForm from "@/components/CardBindingForm";
 
 interface UserDashboardProps {
   user: any;
   applications: any[];
   onLogout: () => void;
   onNewApplication: () => void;
+  onUserUpdate: (userData: any) => void;
 }
 
 const UserDashboard = ({
@@ -23,7 +26,9 @@ const UserDashboard = ({
   applications,
   onLogout,
   onNewApplication,
+  onUserUpdate,
 }: UserDashboardProps) => {
+  const [showCardBinding, setShowCardBinding] = useState(false);
   const getStatusColor = (status: string) => {
     switch (status) {
       case "approved":
@@ -53,6 +58,34 @@ const UserDashboard = ({
   const totalLoaned = applications
     .filter((app) => app.status === "approved")
     .reduce((sum, app) => sum + Number(app.amount), 0);
+
+  const handleCardBound = (card: any) => {
+    const updatedUser = {
+      ...user,
+      cards: [...(user.cards || []), card],
+    };
+    onUserUpdate(updatedUser);
+    setShowCardBinding(false);
+  };
+
+  if (showCardBinding) {
+    return (
+      <div className="w-full max-w-4xl space-y-6">
+        <Button
+          variant="outline"
+          onClick={() => setShowCardBinding(false)}
+          className="mb-4"
+        >
+          <Icon name="ArrowLeft" className="mr-2" size={16} />
+          Назад к кабинету
+        </Button>
+        <CardBindingForm
+          onCardBound={handleCardBound}
+          onCancel={() => setShowCardBinding(false)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-4xl space-y-6">
@@ -108,6 +141,106 @@ const UserDashboard = ({
           </CardContent>
         </Card>
       </div>
+
+      {/* Управление картами */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Icon name="CreditCard" size={20} />
+                Банковские карты
+              </CardTitle>
+              <CardDescription>Управление привязанными картами</CardDescription>
+            </div>
+            <Button variant="outline" onClick={() => setShowCardBinding(true)}>
+              <Icon name="Plus" className="mr-2" size={16} />
+              Добавить карту
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {!user.cards || user.cards.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Icon
+                  name="CreditCard"
+                  size={32}
+                  className="text-emerald-600"
+                />
+              </div>
+              <h3 className="font-semibold mb-2">Привяжите банковскую карту</h3>
+              <p className="text-muted-foreground mb-4">
+                Увеличьте шансы одобрения займа на 85%
+              </p>
+              <Button onClick={() => setShowCardBinding(true)}>
+                <Icon name="Plus" className="mr-2" size={16} />
+                Привязать карту
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {user.cards.map((card: any) => (
+                <div
+                  key={card.id}
+                  className="flex items-center justify-between p-4 border rounded-lg"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded flex items-center justify-center">
+                      <Icon
+                        name="CreditCard"
+                        size={16}
+                        className="text-white"
+                      />
+                    </div>
+                    <div>
+                      <div className="font-medium">{card.maskedNumber}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {card.bankName} • {card.expiry}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {card.verified && (
+                      <Badge
+                        variant="default"
+                        className="bg-green-100 text-green-700"
+                      >
+                        <Icon name="CheckCircle" size={12} className="mr-1" />
+                        Подтверждена
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              {/* Премиум услуга */}
+              <Card className="bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border-emerald-200">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <Icon name="Star" size={20} className="text-emerald-600" />
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-emerald-700">
+                        Повышение одобрения займа
+                      </h4>
+                      <p className="text-sm text-emerald-600">
+                        Гарантия рассмотрения в течение 5 минут • +85% к
+                        одобрению
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-emerald-700">
+                        499 ₽
+                      </div>
+                      <div className="text-xs text-emerald-600">за заявку</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Премиум услуги */}
       <Card>

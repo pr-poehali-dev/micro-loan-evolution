@@ -40,6 +40,7 @@ const LoanApplication = ({ onSubmit, user }: LoanApplicationProps) => {
     birthDate: "",
     address: "",
     premiumService: false,
+    selectedCard: "",
   });
   const { toast } = useToast();
 
@@ -147,6 +148,33 @@ const LoanApplication = ({ onSubmit, user }: LoanApplicationProps) => {
               </SelectContent>
             </Select>
           </div>
+
+          {/* Выбор карты для выплаты */}
+          {user.cards && user.cards.length > 0 && (
+            <div className="space-y-2">
+              <Label htmlFor="card-select">Карта для получения займа</Label>
+              <Select
+                value={formData.selectedCard}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, selectedCard: value }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите карту" />
+                </SelectTrigger>
+                <SelectContent>
+                  {user.cards.map((card: any) => (
+                    <SelectItem key={card.id} value={card.id.toString()}>
+                      <div className="flex items-center gap-2">
+                        <Icon name="CreditCard" size={16} />
+                        {card.maskedNumber} • {card.bankName}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -278,8 +306,9 @@ const LoanApplication = ({ onSubmit, user }: LoanApplicationProps) => {
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Увеличивает вероятность одобрения на 85% и обеспечивает
-                    рассмотрение в течение 5 минут
+                    {user.cards && user.cards.length > 0
+                      ? "Приоритетное рассмотрение с привязанной картой"
+                      : "Увеличивает вероятность одобрения на 85% и обеспечивает рассмотрение в течение 5 минут"}
                   </p>
                 </div>
               </div>

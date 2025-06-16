@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import Icon from "@/components/ui/icon";
 import { useToast } from "@/hooks/use-toast";
+import CardBindingForm from "@/components/CardBindingForm";
 
 interface AuthFormProps {
   onLogin: (userData: any) => void;
@@ -28,6 +29,8 @@ const AuthForm = ({ onLogin }: AuthFormProps) => {
     email: "",
     agreement: false,
   });
+  const [showCardBinding, setShowCardBinding] = useState(false);
+  const [userCards, setUserCards] = useState<any[]>([]);
   const { toast } = useToast();
 
   const handleLogin = (e: React.FormEvent) => {
@@ -47,6 +50,7 @@ const AuthForm = ({ onLogin }: AuthFormProps) => {
       lastName: "Петров",
       phone: loginData.phone,
       email: "ivan@example.com",
+      cards: userCards,
     });
 
     toast({
@@ -77,6 +81,7 @@ const AuthForm = ({ onLogin }: AuthFormProps) => {
       lastName: registerData.lastName,
       phone: registerData.phone,
       email: registerData.email,
+      cards: userCards,
     });
 
     toast({
@@ -84,6 +89,20 @@ const AuthForm = ({ onLogin }: AuthFormProps) => {
       description: "Добро пожаловать в МикроЗайм!",
     });
   };
+
+  const handleCardBound = (card: any) => {
+    setUserCards((prev) => [...prev, card]);
+    setShowCardBinding(false);
+  };
+
+  if (showCardBinding) {
+    return (
+      <CardBindingForm
+        onCardBound={handleCardBound}
+        onCancel={() => setShowCardBinding(false)}
+      />
+    );
+  }
 
   return (
     <Card className="w-full max-w-md">
@@ -233,6 +252,27 @@ const AuthForm = ({ onLogin }: AuthFormProps) => {
             </form>
           </TabsContent>
         </Tabs>
+
+        <div className="mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+          <div className="flex items-center gap-2 mb-2">
+            <Icon name="CreditCard" size={18} className="text-emerald-600" />
+            <span className="font-semibold text-emerald-700">
+              Привязка карты
+            </span>
+          </div>
+          <p className="text-sm text-emerald-600 mb-3">
+            Увеличьте шансы одобрения займа на 85% привязав банковскую карту
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowCardBinding(true)}
+            className="border-emerald-300 text-emerald-700 hover:bg-emerald-100"
+          >
+            <Icon name="Plus" className="mr-2" size={16} />
+            Привязать карту
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
